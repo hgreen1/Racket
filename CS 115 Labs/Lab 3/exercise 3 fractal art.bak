@@ -1,0 +1,45 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |exercise 3 fractal art|) (read-case-sensitive #t) (teachpacks ((lib "image.ss" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.ss" "teachpack" "2htdp")))))
+(define *block* (rectangle 10 30 'solid 'red))
+
+(check-expect (fractal-lvl-1 (rectangle 10 30 'solid 'red))
+              (above (beside (scale 0.5 (rotate 35
+                                                (rectangle 10 30 'solid 'red)))
+                             (scale 0.5 (rotate -35
+                                                (rectangle 10 30 'solid 'red))))
+                     (rectangle 10 30 'solid 'red)))
+
+(define (fractal-lvl-1 img)
+  (above (beside (scale 0.5 (rotate 35 img))
+                 (scale 0.5 (rotate -35 img)))
+         img))
+
+(check-expect (fractal-lvl-2 *block*)
+  (above (beside (scale 0.5 (rotate 35 (fractal-lvl-1 *block*)))
+                 (scale 0.5 (rotate -35 (fractal-lvl-1 *block*))))
+         *block*))
+
+(define (fractal-lvl-2 img) 
+  (above (beside (scale 0.5 (rotate 35 (fractal-lvl-1 *block*)))
+                 (scale 0.5 (rotate -35 (fractal-lvl-1 *block*))))
+         *block*))
+
+(check-expect (fractal-lvl-3 *block*)
+  (above (beside (scale 0.5 (rotate 35 (fractal-lvl-2 *block*)))
+                 (scale 0.5 (rotate -35 (fractal-lvl-2 *block*))))
+         *block*))
+
+(define (fractal-lvl-3 img) 
+  (above (beside (scale 0.5 (rotate 35 (fractal-lvl-2 *block*)))
+                 (scale 0.5 (rotate -35 (fractal-lvl-2 *block*))))
+         *block*))
+
+(define (fractal img lvl)
+  (if (= lvl 1) (fractal-lvl-1 img)
+      (if (= lvl 2) (fractal-lvl-2 img) 
+          (if (= lvl 3) (fractal-lvl-3 img)
+              0))))
+
+(fractal *block* 3)
+                 

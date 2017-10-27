@@ -1,0 +1,59 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |multiple balls|) (read-case-sensitive #t) (teachpacks ((lib "universe.ss" "teachpack" "2htdp") (lib "image.ss" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "universe.ss" "teachpack" "2htdp") (lib "image.ss" "teachpack" "2htdp")))))
+(define *ball* (circle 20 'solid 'blue))
+(define *bg* (empty-scene 500 500))
+
+(define *four-balls* (list (make-posn 100 100)
+                           (make-posn 200 200)
+                           (make-posn 300 300)
+                           (make-posn 400 400)
+                           (make-posn 500 500)
+                           (make-posn 0 0)
+                           (make-posn 50 50)
+                           (make-posn 150 150)
+                           (make-posn 250 250)
+                           (make-posn 350 350)
+                           (make-posn 450 450)))
+
+;; draw-ball :: Posn Image -> Image
+(define (draw-ball loc bg)
+  (place-image *ball*
+               (posn-x loc)
+               (posn-y loc)
+               bg))
+
+;; draw-balls :: [Posn] Image -> Image
+;; [posn] is either a cons containing a posn or empty.
+(define (draw-balls locs)
+  (if (empty? locs)
+      *bg*
+      (draw-ball (first locs)
+                 (draw-balls (rest locs)))))
+
+;; add-ball :: posn [posn] [posn] -> [posn]
+(define (add-ball loc locs)
+  (cons loc locs))
+
+(define (mouse-handler ws x y me)
+  (cond
+    ((mouse=? me "button-down") (add-ball (make-posn x y) ws))
+    (else ws)))
+
+;; move-ball :: Posn -> Posn
+(define (move-ball loc)
+  (make-posn (posn-x loc)
+             (add1 (posn-y loc))))
+
+;; move-balls :: [Posn] -> Posn
+(define (move-balls locs)
+  (if (empty? locs)
+      empty
+      (cons (move-ball (first locs))
+            (move-balls (rest locs)))))
+
+(define (start init)
+  (big-bang init
+            (to-draw draw-balls)
+            (on-mouse mouse-handler)
+            (on-tick move-balls)))

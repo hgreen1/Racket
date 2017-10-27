@@ -1,0 +1,35 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |exercise 3|) (read-case-sensitive #t) (teachpacks ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp")))))
+(define-struct timer (running? start curr))
+
+(define (render ws)
+  (if (timer-running? ws)
+      (place-image (text (number->string (timer-curr ws)) 64 'red)
+                   250
+                   250
+                   (empty-scene 500 500))
+      (place-image (text (number->string (timer-curr ws)) 64 'blue)
+                   250
+                   250
+                   (empty-scene 500 500))))
+
+
+(define (tick-handler ws)
+  (make-timer false 100 0))
+
+(define (key-handler ws key)
+  (cond
+    ((key=? key " ") (make-timer true (timer-start ws) (timer-curr ws)))
+    ((key=? key "r") (make-timer false (timer-start ws) 100))
+    ((key=? key "i") (make-timer true (timer-start ws) (+ 10 (timer-curr ws))))
+    ((key=? key "d") (make-timer true (timer-start ws) (- 10 (timer-curr ws))))
+    (else ws)))
+
+(define (start ws)
+  (big-bang (make-timer false 100 0)
+            (on-key key-handler)
+            (on-tick tick-handler 1/10)
+            (to-draw render)))
+
+(start (make-timer false 100 0))

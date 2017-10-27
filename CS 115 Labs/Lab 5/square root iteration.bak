@@ -1,0 +1,21 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |square root iteration|) (read-case-sensitive #t) (teachpacks ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp")))))
+(define *n* 4)
+
+(define (improve ws)
+  (exact->inexact (/ (+ ws (/ *n* ws)) 2)))
+
+(define (render ws)
+  (overlay (text (number->string (improve ws)) 24 'black)
+           (empty-scene 500 500)))
+
+(define (key-handler ws key)
+  (cond
+    ((string=? key " ") (improve ws))
+    (else ws)))
+
+(define (start ws)
+  (big-bang ws
+            (to-draw render)
+            (on-key key-handler)))

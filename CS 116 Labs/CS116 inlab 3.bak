@@ -1,0 +1,12 @@
+(define (sort-list lst)
+	(if (empty? lst)
+		empty
+		(cons (first lst)
+			  (sort-list (rest lst)))))
+			  
+(define (sorted-insert n lst)
+	(if (empty? lst)
+		(list n)
+		(if (< n (first lst))
+			(cons n lst)
+			(cons (first lst) (sorted insert n (rest lst))))))

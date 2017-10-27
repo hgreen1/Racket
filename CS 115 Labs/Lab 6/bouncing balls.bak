@@ -1,0 +1,21 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |bouncing balls|) (read-case-sensitive #t) (teachpacks ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp")))))
+(define *ball* (circle 10 'solid 'red))
+(define *bg* (empty-scene 300 300))
+(define *velocity* (make-posn 10 5))
+
+(define (render ws)
+  (place-image *ball*
+               (posn-x ws) (posn-y ws)
+               *bg*))
+
+(define (move-ball ws)
+  (make-posn (+ (posn-x ws) (posn-x *velocity*))
+             (+ (posn-y ws) (posn-y *velocity*))))
+
+(define (start init)
+  (big-bang init
+            (to-draw render)
+            (on-tick move-ball)))
+                

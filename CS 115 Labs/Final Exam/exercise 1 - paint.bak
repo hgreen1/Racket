@@ -1,0 +1,26 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |exercise 1 - paint|) (read-case-sensitive #t) (teachpacks ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.ss" "teachpack" "2htdp") (lib "universe.ss" "teachpack" "2htdp")))))
+(define-struct canvas (curr-color image))
+(define *dot* (circle 5 'solid (canvas-curr-color *dot*)))
+(define *bg* (empty-scene 500 500))
+
+(define (mouse-handler ws x y me)
+  (cond
+    ((mouse=? me "button-down") (place-image *dot*
+                                             x y
+                                             ws))
+    (else ws)))
+
+(define (key-handler key ws)
+  (cond
+    ((key=? key "r") (make-canvas-curr-color 'red))
+    ((key=? key "g") (make-canvas-curr-color 'green))
+    ((key=? key "b") (make-canvas-curr-color 'blue))
+    ((key=? key "c") (start *init*))
+    (else ws)))
+
+(big-bang (make-canvas 'red (empty-scene 500 500))
+          (to-draw render)
+          (on-mouse mouse-handler)
+          (on-key key-handler))
